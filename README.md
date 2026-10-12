@@ -6,7 +6,7 @@
 <p align="center">
   <a href="https://www.stepfun.com/step-5-preview">Model Page</a> &nbsp;|&nbsp;
   <a href="https://platform.stepfun.ai/docs/en/guides/models/step-5-preview">Documentation</a> &nbsp;|&nbsp;
-  <a href="https://platform.stepfun.com/">API Platform</a>
+  <a href="https://platform.stepfun.ai/">API Platform</a>
 </p>
 
 <p align="center">
