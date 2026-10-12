@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="assets/stepfun-logo.png" alt="StepFun logo" width="40" align="middle">
+  <img src="assets/stepfun-logo.png" alt="StepFun logo" width="40" align="top">
   Step 5 Preview
 </h1>
 
