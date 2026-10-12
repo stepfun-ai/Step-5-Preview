@@ -4,6 +4,12 @@
 </h1>
 
 <p align="center">
+  <a href="https://huggingface.co/stepfun-ai/Step-5-Preview"><img src="https://img.shields.io/badge/Hugging%20Face-FP8-FFD21E" alt="Hugging Face FP8"></a>
+  <a href="https://huggingface.co/stepfun-ai/Step-5-Preview-BF16"><img src="https://img.shields.io/badge/Hugging%20Face-BF16-FFD21E" alt="Hugging Face BF16"></a>
+  <a href="https://modelscope.ai/models/stepfun-ai/Step-5-Preview"><img src="https://img.shields.io/badge/ModelScope-624AFF" alt="ModelScope"></a>
+</p>
+
+<p align="center">
   <a href="https://www.stepfun.com/step-5-preview"><img src="https://img.shields.io/badge/Model%20Page-00BFA5" alt="Step 5 Preview Model Page"></a>
   <a href="https://platform.stepfun.ai/docs/en/guides/models/step-5-preview"><img src="https://img.shields.io/badge/Documentation-2563EB" alt="Developer Documentation"></a>
   <a href="https://platform.stepfun.ai/"><img src="https://img.shields.io/badge/API%20Platform-7C3AED" alt="StepFun API Platform"></a>
