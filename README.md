@@ -4,15 +4,9 @@
 </h1>
 
 <p align="center">
-  <a href="https://www.stepfun.com/step-5-preview">Model Page</a> &nbsp;|&nbsp;
-  <a href="https://platform.stepfun.ai/docs/en/guides/models/step-5-preview">Documentation</a> &nbsp;|&nbsp;
-  <a href="https://platform.stepfun.ai/">API Platform</a>
-</p>
-
-<p align="center">
-  <a href="https://www.stepfun.com/step-5-preview"><img src="https://img.shields.io/badge/Model-Step%205%20Preview-00BFA5" alt="Step 5 Preview Model Page"></a>
-  <a href="https://platform.stepfun.ai/docs/en/guides/models/step-5-preview"><img src="https://img.shields.io/badge/Docs-Developer%20Guide-2563EB" alt="Developer Documentation"></a>
-  <a href="https://platform.stepfun.com/"><img src="https://img.shields.io/badge/API-StepFun-7C3AED" alt="StepFun API Platform"></a>
+  <a href="https://www.stepfun.com/step-5-preview"><img src="https://img.shields.io/badge/Model%20Page-00BFA5" alt="Step 5 Preview Model Page"></a>
+  <a href="https://platform.stepfun.ai/docs/en/guides/models/step-5-preview"><img src="https://img.shields.io/badge/Documentation-2563EB" alt="Developer Documentation"></a>
+  <a href="https://platform.stepfun.ai/"><img src="https://img.shields.io/badge/API%20Platform-7C3AED" alt="StepFun API Platform"></a>
 </p>
 
 ## Introduction
@@ -338,5 +332,5 @@ curl "$BASE_URL/v1/chat/completions" \
 
 - [Step 5 Preview Model Page](https://www.stepfun.com/step-5-preview) — Model overview, evaluation context, and long-horizon case studies.
 - [Documentation](https://platform.stepfun.ai/docs/en/guides/models/step-5-preview) — Official documentation and developer guides.
-- [API Platform](https://platform.stepfun.com/) — Model access and platform services.
+- [API Platform](https://platform.stepfun.ai/) — Model access and platform services.
 - [StepFun Website](https://www.stepfun.com/) — Company information and model announcements.
