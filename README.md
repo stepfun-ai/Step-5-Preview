@@ -67,7 +67,7 @@ The following results summarize Step 5 Preview's performance across coding, agen
 
 **Evaluation notes**
 
-- Recommended sampling settings: `temperature=1.0`, `top_p=0.95`, `top_k=0`.
+- Recommended inference settings: `temperature=1.0`, `top_p=0.95`, `top_k=0`.
 - Step 5 Preview results shown above use the **High** reasoning setting.
 - GDPval-AA v2.1 scores are based on results from [Artificial Analysis](https://artificialanalysis.ai/) as of September 20, 2026.
 - DeepSWE v1.1 evaluations use the [SWE-agent](https://github.com/SWE-agent/SWE-agent) harness with `temperature=1.0` and `top_p=0.95`.
