@@ -283,31 +283,149 @@ This launches 16 processes across the two nodes, matching the 16-shard checkpoin
 
 #### Environment Setup
 
-Pull the official SGLang Docker image:
+Pull the Step 5 Preview SGLang Docker image:
 
 ```bash
-docker pull lmsysorg/sglang:latest
+docker pull lmsysorg/sglang:step-5-preview
 ```
 
-After pulling the image, follow the [SGLang installation guide](https://docs.sglang.io/docs/get-started/install) to start a GPU-enabled container with access to your model weights, then run the command below inside it.
+After pulling the image, follow the [SGLang installation guide](https://docs.sglang.io/docs/get-started/install) to start a GPU-enabled container with access to your model weights, then run the command for your deployment below inside it.
 
-#### FP8
+#### B300: Low latency (4 GPUs, TP4/EP1)
 
-The following command serves the FP8 checkpoint as `step5` with TP4 / EP1 and EAGLE speculative decoding. The selected attention and MoE backends require compatible GPU hardware:
+For single-user chat and latency-sensitive serving.
 
 ```bash
+export CUDA_VISIBLE_DEVICES=0,1,2,3
+
 python -m sglang.launch_server \
-  --model-path stepfun-ai/Step-5-Preview --served-model-name step5 \
-  --tp 4 --ep-size 1 \
-  --mem-fraction-static 0.9 --swa-full-tokens-ratio 0.1 \
-  --attention-backend fa4 --page-size 64 --disable-prefill-cuda-graph \
-  --reasoning-parser step5 --tool-call-parser step5 \
+  --trust-remote-code \
+  --model-path stepfun-ai/Step-5-Preview \
+  --served-model-name step5 \
+  --tp 4 \
+  --ep-size 1 \
   --moe-runner-backend flashinfer_trtllm \
-  --speculative-algorithm EAGLE --speculative-num-steps 3 \
-  --speculative-eagle-topk 1 --speculative-num-draft-tokens 4 \
-  --enable-multi-layer-eagle --max-running-requests 64 \
+  --attention-backend fa4 \
+  --page-size 64 \
+  --kv-cache-dtype bfloat16 \
+  --mem-fraction-static 0.9 \
+  --swa-full-tokens-ratio 0.03 \
   --chunked-prefill-size 16384 \
-  --flashinfer-allreduce-fusion-backend trtllm
+  --max-running-requests 64 \
+  --cuda-graph-backend-prefill breakable \
+  --flashinfer-allreduce-fusion-backend trtllm \
+  --speculative-algorithm EAGLE \
+  --speculative-num-steps 3 \
+  --speculative-eagle-topk 1 \
+  --speculative-num-draft-tokens 4 \
+  --enable-multi-layer-eagle \
+  --reasoning-parser step3p5 \
+  --tool-call-parser step3p5 \
+  --host 0.0.0.0 \
+  --port 30000
+```
+
+#### B300: Balanced (4 GPUs, TP4/EP1)
+
+For serving several users concurrently with MegaMoE.
+
+```bash
+export CUDA_VISIBLE_DEVICES=0,1,2,3
+
+python -m sglang.launch_server \
+  --trust-remote-code \
+  --model-path stepfun-ai/Step-5-Preview \
+  --served-model-name step5 \
+  --tp 4 \
+  --ep-size 1 \
+  --moe-a2a-backend megamoe \
+  --attention-backend fa4 \
+  --page-size 64 \
+  --kv-cache-dtype bfloat16 \
+  --mem-fraction-static 0.9 \
+  --swa-full-tokens-ratio 0.03 \
+  --chunked-prefill-size 16384 \
+  --max-running-requests 64 \
+  --cuda-graph-backend-prefill breakable \
+  --flashinfer-allreduce-fusion-backend trtllm \
+  --speculative-algorithm EAGLE \
+  --speculative-num-steps 3 \
+  --speculative-eagle-topk 1 \
+  --speculative-num-draft-tokens 4 \
+  --enable-multi-layer-eagle \
+  --reasoning-parser step3p5 \
+  --tool-call-parser step3p5 \
+  --host 0.0.0.0 \
+  --port 30000
+```
+
+#### B300: High throughput (8 GPUs, TP8/Attention DP2/EP8)
+
+For batch generation and high-concurrency serving.
+
+```bash
+export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
+
+python -m sglang.launch_server \
+  --trust-remote-code \
+  --model-path stepfun-ai/Step-5-Preview \
+  --served-model-name step5 \
+  --tp 8 \
+  --attn-dp-size 2 \
+  --ep-size 8 \
+  --moe-runner-backend flashinfer_trtllm \
+  --attention-backend fa4 \
+  --page-size 64 \
+  --kv-cache-dtype bfloat16 \
+  --mem-fraction-static 0.9 \
+  --swa-full-tokens-ratio 0.03 \
+  --chunked-prefill-size 16384 \
+  --max-running-requests 64 \
+  --cuda-graph-backend-prefill disabled \
+  --flashinfer-allreduce-fusion-backend trtllm \
+  --speculative-algorithm EAGLE \
+  --speculative-num-steps 3 \
+  --speculative-eagle-topk 1 \
+  --speculative-num-draft-tokens 4 \
+  --enable-multi-layer-eagle \
+  --reasoning-parser step3p5 \
+  --tool-call-parser step3p5 \
+  --host 0.0.0.0 \
+  --port 30000
+```
+
+#### H200: Balanced (8 GPUs, TP8/EP8)
+
+For single-node H200 serving with Triton MoE and FA3 attention.
+
+```bash
+export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
+
+python -m sglang.launch_server \
+  --trust-remote-code \
+  --model-path stepfun-ai/Step-5-Preview \
+  --served-model-name step5 \
+  --tp 8 \
+  --ep-size 8 \
+  --moe-runner-backend triton \
+  --attention-backend fa3 \
+  --page-size 64 \
+  --kv-cache-dtype bfloat16 \
+  --mem-fraction-static 0.9 \
+  --swa-full-tokens-ratio 0.03 \
+  --chunked-prefill-size 16384 \
+  --max-running-requests 64 \
+  --cuda-graph-backend-prefill breakable \
+  --flashinfer-allreduce-fusion-backend trtllm \
+  --speculative-algorithm EAGLE \
+  --speculative-num-steps 3 \
+  --speculative-eagle-topk 1 \
+  --speculative-num-draft-tokens 4 \
+  --enable-multi-layer-eagle \
+  --reasoning-parser step3p5 \
+  --tool-call-parser step3p5 \
+  --host 0.0.0.0 \
+  --port 30000
 ```
 
 ### Send a Request
