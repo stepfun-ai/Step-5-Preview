@@ -32,6 +32,7 @@ Step 5 Preview is a sparse Mixture-of-Experts (MoE) model with 600B total parame
     - [SGLang](#sglang)
     - [Send a Request](#send-a-request)
 - [Resources](#resources)
+- [License](#license)
 
 ## Key Capabilities
 
@@ -459,3 +460,9 @@ curl "$BASE_URL/v1/chat/completions" \
 - [Documentation](https://platform.stepfun.ai/docs/en/guides/models/step-5-preview) — Official documentation and developer guides.
 - [API Platform](https://platform.stepfun.ai/) — Model access and platform services.
 - [StepFun Website](https://www.stepfun.com/) — Company information and model announcements.
+
+## License
+
+This model, including its weights, parameters, configuration, tokenizer, model-specific code, and documentation, is licensed under the StepFun Model License 1.0. The full text of the License is available in the [LICENSE](LICENSE) file in this repository. The StepFun Model License 1.0 is an Apache-2.0-Style license, with additional attribution and commercial-license conditions specific to model use, modification and distribution.
+
+Where accompanying materials in this repository, including sample code, datasets, third-party components and other documentation, are separately marked as subject to a different license, such materials are licensed under that license.
