@@ -97,6 +97,8 @@ Use a framework build that includes Step 5 Preview support, including the reason
 | vLLM | BF16 | Two H200 nodes, 16 GPUs | TP16, TEP16, or DEP16 | OpenAI-compatible API |
 | Transformers | FP8 | One H200 node, 8 GPUs | TP8 / EP8 | Offline generation |
 | Transformers | BF16 | Two H200 nodes, 16 GPUs | TP16 / EP16 | Offline generation (see validation note below) |
+| SGLang | FP8 | One B300 node, 4 GPUs | TP4 / EP4 | OpenAI-compatible API |
+| SGLang | FP8 | One H200 node, 8 GPUs | TP8 / EP8 | OpenAI-compatible API |
 
 DP, TP, and EP refer to data, tensor, and expert parallelism, respectively. TEP combines tensor and expert parallelism; DEP combines data and expert parallelism. These example configurations are sized for the deployments below. Actual memory requirements, usable context length, and concurrency vary with the checkpoint, inference framework, and KV cache allocation.
 
@@ -405,11 +407,11 @@ Pull the Step 5 Preview SGLang Docker image:
 docker pull lmsysorg/sglang:step-5-preview
 ```
 
-Then, launch the server using the configuration for your hardware.
+Launch the server using the configuration for your hardware. For more optimized configurations, including MegaMoE, attention data parallelism, and HiCache, see the [SGLang Cookbook for Step 5 Preview](https://docs.sglang.io/cookbook/autoregressive/StepFun/Step-5-Preview).
 
-#### B300: Low latency (4 GPUs, TP4/EP1)
+#### B300: TP4/EP4, 4 GPUs
 
-For single-user chat and latency-sensitive serving.
+This configuration uses MegaMoE for the FP8 routed experts.
 
 ```bash
 export CUDA_VISIBLE_DEVICES=0,1,2,3
@@ -419,8 +421,9 @@ python -m sglang.launch_server \
   --model-path stepfun-ai/Step-5-Preview \
   --served-model-name step5 \
   --tp 4 \
-  --ep-size 1 \
+  --ep-size 4 \
   --moe-runner-backend flashinfer_trtllm \
+  --moe-a2a-backend megamoe \
   --attention-backend fa4 \
   --page-size 64 \
   --kv-cache-dtype bfloat16 \
@@ -435,13 +438,13 @@ python -m sglang.launch_server \
   --speculative-eagle-topk 1 \
   --speculative-num-draft-tokens 4 \
   --enable-multi-layer-eagle \
-  --reasoning-parser step3p5 \
-  --tool-call-parser step3p5 \
+  --reasoning-parser step5 \
+  --tool-call-parser step5 \
   --host 0.0.0.0 \
   --port 30000
 ```
 
-#### H200: Balanced (8 GPUs, TP8/EP8)
+#### H200: TP8/EP8, 8 GPUs
 
 For single-node H200 serving with Triton MoE and FA3 attention.
 
@@ -469,13 +472,11 @@ python -m sglang.launch_server \
   --speculative-eagle-topk 1 \
   --speculative-num-draft-tokens 4 \
   --enable-multi-layer-eagle \
-  --reasoning-parser step3p5 \
-  --tool-call-parser step3p5 \
+  --reasoning-parser step5 \
+  --tool-call-parser step5 \
   --host 0.0.0.0 \
   --port 30000
 ```
-
-For more deployment options, see the [SGLang Cookbook](https://cookbook.sglang.io/cookbook/autoregressive/StepFun/step-5-preview).
 
 ### Send a Request
 
