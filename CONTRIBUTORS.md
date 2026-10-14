@@ -7,259 +7,259 @@ Contributors are listed alphabetically by last name, then by given name. The ord
 <table>
 <tr>
   <td>Jing Bai</td>
-  <td>Yuhao Huang</td>
+  <td>Zhewei Huang</td>
   <td>Yan Mo</td>
   <td>Zhe Xie</td>
 </tr>
 <tr>
   <td>Yang Bai</td>
-  <td>Zhewei Huang</td>
+  <td>Zhiguo Huang</td>
   <td>Jingchen Ni</td>
   <td>Qi Xing</td>
 </tr>
 <tr>
   <td>Zuo Bai</td>
-  <td>Zhiguo Huang</td>
+  <td>Wei Ji</td>
   <td>Zhen Ni</td>
   <td>Chang Xu</td>
 </tr>
 <tr>
   <td>Jiajie Bian</td>
-  <td>Wei Ji</td>
+  <td>Ai Jian†</td>
   <td>Yazhe Niu</td>
   <td>Fang Xu</td>
 </tr>
 <tr>
   <td>Hui Cai</td>
-  <td>Ai Jian†</td>
+  <td>Ruizhe Jiang</td>
   <td>Haoran Pan</td>
   <td>Jiahao Xu†</td>
 </tr>
 <tr>
   <td>Xuedan Cai</td>
-  <td>Ruizhe Jiang</td>
+  <td>Wenjun Jiang</td>
   <td>Dongqing Pang</td>
   <td>Jiyi Xu</td>
 </tr>
 <tr>
   <td>Yan Cai</td>
-  <td>Wenjun Jiang</td>
+  <td>Xiaochen Jiang</td>
   <td>Baoqi Pei</td>
   <td>Yang Xu</td>
 </tr>
 <tr>
   <td>Yuzhu Cai</td>
-  <td>Xiaochen Jiang</td>
+  <td>Yang Jiang</td>
   <td>Guozhen Peng</td>
   <td>Yanming Xu</td>
 </tr>
 <tr>
   <td>Yicheng Cao†</td>
-  <td>Yang Jiang</td>
+  <td>Binxing Jiao</td>
   <td>Hongbo Peng</td>
   <td>Yiming Xu</td>
 </tr>
 <tr>
   <td>Shuochen Chang</td>
-  <td>Binxing Jiao</td>
+  <td>Kaifeng Jin</td>
   <td>Shixin Peng</td>
   <td>Yunfang Xu</td>
 </tr>
 <tr>
   <td>Xinan Chang</td>
-  <td>Kaifeng Jin</td>
+  <td>Ruoyun Jing</td>
   <td>Yue Peng</td>
   <td>Haolong Yan</td>
 </tr>
 <tr>
   <td>Zhichao Chang</td>
-  <td>Ruoyun Jing</td>
+  <td>An Kang</td>
   <td>Di Qi</td>
   <td>Jianhao Yan</td>
 </tr>
 <tr>
   <td>Chenshu Chen†</td>
-  <td>An Kang</td>
+  <td>Xiangwen Kong</td>
   <td>Junbo Qi</td>
   <td>Kaiwen Yan</td>
 </tr>
 <tr>
   <td>Jian Chen</td>
-  <td>Xiangwen Kong</td>
+  <td>Ang Li</td>
   <td>Xing Qiao</td>
   <td>Qiyao Yan</td>
 </tr>
 <tr>
   <td>Jingzhou Chen</td>
-  <td>Ang Li</td>
+  <td>Binyan Li</td>
   <td>Yifan Qiu</td>
   <td>Shannan Yan†</td>
 </tr>
 <tr>
   <td>Liangyu Chen</td>
-  <td>Binyan Li</td>
+  <td>Brian Li</td>
   <td>Mengqiang Ren</td>
   <td>Shilin Yan</td>
 </tr>
 <tr>
   <td>Lina Chen</td>
-  <td>Brian Li</td>
+  <td>Haoze Li</td>
   <td>Xiaoxiao Ren</td>
   <td>Bowen Yang</td>
 </tr>
 <tr>
   <td>Xiang Chen</td>
-  <td>Haoze Li</td>
+  <td>Melody Li</td>
   <td>Ziqi Ren</td>
   <td>Haojin Yang†</td>
 </tr>
 <tr>
   <td>Xuhang Chen</td>
-  <td>Melody Li</td>
+  <td>Muyang Li</td>
   <td>Shijie Shang†</td>
   <td>Lei Yang</td>
 </tr>
 <tr>
   <td>Yu Chen</td>
-  <td>Muyang Li</td>
+  <td>Songqi Li</td>
   <td>Kangning Shen</td>
   <td>Mi Yang</td>
 </tr>
 <tr>
   <td>Yukun Chen</td>
-  <td>Songqi Li</td>
+  <td>Tianning Li</td>
   <td>Lieyu Shi</td>
   <td>Shiliang Yang</td>
 </tr>
 <tr>
   <td>Yuyang Chen</td>
-  <td>Tianning Li</td>
+  <td>Weiyuan Li</td>
   <td>Yukang Shi</td>
   <td>Yuxiang Yang</td>
 </tr>
 <tr>
   <td>Zhong Chen</td>
-  <td>Weiyuan Li</td>
+  <td>Wencan Li</td>
   <td>Yubo Shu</td>
   <td>Zheng'aoxing Yang</td>
 </tr>
 <tr>
   <td>Zhuanghao Chen</td>
-  <td>Wencan Li</td>
+  <td>Xiaolong Li</td>
   <td>Tongrui Su</td>
   <td>Chengyuan Yao</td>
 </tr>
 <tr>
   <td>Jie Cheng</td>
-  <td>Xiaolong Li</td>
+  <td>Xiuyu Li</td>
   <td>Yifan Sui</td>
   <td>Yifan Yao</td>
 </tr>
 <tr>
   <td>Wei Cheng</td>
-  <td>Xiuyu Li</td>
+  <td>Yiyang Li</td>
   <td>Chenxi Sun</td>
   <td>Haiquan Yin</td>
 </tr>
 <tr>
   <td>Yuan Cheng</td>
-  <td>Yiyang Li</td>
+  <td>Yu Li†</td>
   <td>Deshan Sun</td>
   <td>Qingyu Yin</td>
 </tr>
 <tr>
   <td>Zihui Cheng</td>
-  <td>Yu Li†</td>
+  <td>Yusheng Li</td>
   <td>Jianjian Sun</td>
   <td>Wenyu Yin</td>
 </tr>
 <tr>
   <td>Yang Chu</td>
-  <td>Yusheng Li</td>
+  <td>Zekun Li</td>
   <td>Mengyuan Sun†</td>
   <td>Xin Yin†</td>
 </tr>
 <tr>
   <td>Hengrui Cui</td>
-  <td>Zekun Li</td>
+  <td>Zexi Li</td>
   <td>Rui Sun</td>
   <td>Tianhao You</td>
 </tr>
 <tr>
   <td>Junxia Cui</td>
-  <td>Zexi Li</td>
+  <td>Kai Liang</td>
   <td>Kaijun Tan</td>
   <td>Wang You</td>
 </tr>
 <tr>
   <td>Qixiang Dai</td>
-  <td>Kai Liang</td>
+  <td>Kangheng Lin†</td>
   <td>Liguo Tan</td>
   <td>En Yu</td>
 </tr>
 <tr>
   <td>Yuhong Dai</td>
-  <td>Kangheng Lin†</td>
+  <td>Lin Lin</td>
   <td>Zihan Tang</td>
   <td>Wei Yuan</td>
 </tr>
 <tr>
   <td>Kangcheng Deng</td>
-  <td>Lin Lin</td>
+  <td>Tunan Lin</td>
   <td>Shuangshuang Tian</td>
   <td>Yucheng Yuan</td>
 </tr>
 <tr>
   <td>Wenjin Deng</td>
-  <td>Tunan Lin</td>
+  <td>Yuxuan Lin</td>
   <td>Jian Tong</td>
   <td>Tianchi Yue</td>
 </tr>
 <tr>
   <td>Leilei Ding†</td>
-  <td>Yuxuan Lin</td>
+  <td>Haitong Liu</td>
   <td>Fanqi Wan</td>
   <td>Zheng Zeng</td>
 </tr>
 <tr>
   <td>Ran Ding†</td>
-  <td>Haitong Liu</td>
+  <td>Jiahao Liu</td>
   <td>Jinxin Wan</td>
   <td>Chao Zhang</td>
 </tr>
 <tr>
   <td>Bo Dong</td>
-  <td>Jiahao Liu</td>
+  <td>Jihua Liu</td>
   <td>Bin Wang</td>
   <td>Ganrui Zhang</td>
 </tr>
 <tr>
   <td>Chenghao Dong</td>
-  <td>Jihua Liu</td>
+  <td>Jixuan Liu</td>
   <td>Haozhe Wang</td>
   <td>Hongbo Zhang</td>
 </tr>
 <tr>
   <td>Qinqin Du</td>
-  <td>Jixuan Liu</td>
+  <td>Junfeng Liu</td>
   <td>Hongyuan Wang</td>
   <td>Jiaran Zhang</td>
 </tr>
 <tr>
   <td>Qinxin Du</td>
-  <td>Junfeng Liu</td>
+  <td>Kaibo Liu</td>
   <td>Jia Wang</td>
   <td>Jingyang Zhang</td>
 </tr>
 <tr>
   <td>Mengmeng Duan</td>
-  <td>Kaibo Liu</td>
+  <td>Licheng Liu</td>
   <td>Mingxuan Wang†</td>
   <td>Kaitai Zhang</td>
 </tr>
 <tr>
   <td>Jiamou Fang</td>
-  <td>Licheng Liu</td>
+  <td>Mengyin Liu</td>
   <td>Na Wang</td>
   <td>Nonghai Zhang</td>
 </tr>
@@ -436,6 +436,12 @@ Contributors are listed alphabetically by last name, then by given name. The ord
   <td>Mitt</td>
   <td>Yuan Xie</td>
   <td>Zoey</td>
+</tr>
+<tr>
+  <td>Yuhao Huang</td>
+  <td></td>
+  <td></td>
+  <td></td>
 </tr>
 </table>
 
