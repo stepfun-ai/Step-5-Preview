@@ -87,41 +87,69 @@ Step 5 Preview can be served through an OpenAI-compatible API with vLLM or SGLan
 
 Use a framework build that includes Step 5 Preview support, including the reasoning, tool-call, and speculative decoding features used in the serving commands.
 
-### H200 Deployment Configurations
+### Deployment Configurations
 
 | Framework | Precision | Hardware | Parallelism | Interface |
 | --- | --- | --- | --- | --- |
-| vLLM | FP8 | One H200 node, 8 GPUs | DP2 × TP4; EP8 | OpenAI-compatible API |
-| vLLM | BF16 | Two H200 nodes, 16 GPUs | DP4 × TP4; EP16 | OpenAI-compatible API |
+| vLLM | FP8 | One B300 node, 4 GPUs | TP4, TEP4, or DEP4 | OpenAI-compatible API |
+| vLLM | FP8 | One H200 node, 8 GPUs | TP8, TEP8, or DEP8 | OpenAI-compatible API |
+| vLLM | BF16 | One B300 node, 8 GPUs | TP8, TEP8, or DEP8 | OpenAI-compatible API |
+| vLLM | BF16 | Two H200 nodes, 16 GPUs | TP16, TEP16, or DEP16 | OpenAI-compatible API |
 | Transformers | FP8 | One H200 node, 8 GPUs | TP8 / EP8 | Offline generation |
 | Transformers | BF16 | Two H200 nodes, 16 GPUs | TP16 / EP16 | Offline generation (see validation note below) |
 
-DP, TP, and EP refer to data, tensor, and expert parallelism, respectively. These example configurations are sized for the deployments below. Actual memory requirements, usable context length, and concurrency vary with the checkpoint, inference framework, and KV cache allocation.
+DP, TP, and EP refer to data, tensor, and expert parallelism, respectively. TEP combines tensor and expert parallelism; DEP combines data and expert parallelism. These example configurations are sized for the deployments below. Actual memory requirements, usable context length, and concurrency vary with the checkpoint, inference framework, and KV cache allocation.
 
 ### vLLM
 
+The examples below expose Step 5 Preview through an OpenAI-compatible API at port `18000`, with `step5` as the model name used in requests.
+
 #### Environment Setup
 
-We recommend using the official vLLM Docker image:
+Pull the Step 5 Preview image and start an interactive container with GPU access:
 
 ```bash
-docker pull vllm/vllm-openai:latest
+docker pull vllm/vllm-openai:step-5-preview
+
+docker run --rm -it \
+    --gpus all \
+    --ipc=host \
+    --network=host \
+    --volume "$HOME/.cache/huggingface:/root/.cache/huggingface" \
+    --entrypoint /bin/bash \
+    vllm/vllm-openai:step-5-preview
 ```
 
-After pulling the image, follow the [vLLM Docker guide](https://docs.vllm.ai/en/latest/deployment/docker/) to start a GPU-enabled container with access to your model weights. Run the commands below inside the container; the two-node setup also requires network connectivity between the containers.
+Run the serving commands below inside the container. If the checkpoint requires authentication, sign in with `hf auth login` before starting the server.
 
-#### FP8: One H200 Node, 8 GPUs
+#### FP8: Single Node on 4 B300 GPUs
 
-To serve the FP8 checkpoint on a single 8-GPU H200 node, run the following command. It uses DP2 × TP4 with EP8 and serves the model as `step5`:
+Choose one of the following parallel configurations for a single node with four B300 GPUs:
+
+| Mode | Tensor parallel | Data parallel | Expert parallel |
+| :---: | :---: | :---: | :---: |
+| TP4 | 4 | 1 | Disabled |
+| TEP4 | 4 | 1 | 4 |
+| DEP4 | 1 | 4 | 4 |
+
+Make all four GPUs visible, then run the command for your chosen configuration:
+
+```bash
+export CUDA_VISIBLE_DEVICES=0,1,2,3
+```
+
+On B300 (Blackwell), the TEP4 and DEP4 commands select MegaMoE with `--moe-backend deep_gemm_mega_moe`. The TP4 command uses the default MoE backend, since MegaMoE requires expert parallelism.
+
+##### TP4: Tensor Parallelism
 
 ```bash
 vllm serve stepfun-ai/Step-5-Preview \
+    --host 0.0.0.0 \
+    --port 18000 \
     --served-model-name "step5" \
     --tensor-parallel-size 4 \
-    --data-parallel-size 2 \
     --data-parallel-backend mp \
     --distributed-executor-backend mp \
-    --enable-expert-parallel \
     --disable-custom-all-reduce \
     --max-model-len 1048576 \
     --max-num-batched-tokens 16384 \
@@ -135,77 +163,164 @@ vllm serve stepfun-ai/Step-5-Preview \
     --tool-call-parser step5
 ```
 
-#### BF16: Two H200 Nodes, 16 GPUs
+##### TEP4: Tensor and Expert Parallelism
 
-For the BF16 checkpoint, run one command on each of two 8-GPU H200 nodes. Both nodes must use the same container image and BF16 checkpoint path, accessible inside each container. Set `DP_ADDRESS` to node 0's reachable IP on the high-speed inter-node network, and use the same `DP_RPC_PORT` on both nodes.
+```bash
+vllm serve stepfun-ai/Step-5-Preview \
+    --host 0.0.0.0 \
+    --port 18000 \
+    --served-model-name "step5" \
+    --tensor-parallel-size 4 \
+    --enable-expert-parallel \
+    --moe-backend deep_gemm_mega_moe \
+    --data-parallel-backend mp \
+    --distributed-executor-backend mp \
+    --disable-custom-all-reduce \
+    --max-model-len 1048576 \
+    --max-num-batched-tokens 16384 \
+    --max-num-seqs 64 \
+    --gpu-memory-utilization 0.85 \
+    --enable-prefix-caching \
+    --spec-method mtp \
+    --spec-tokens 3 \
+    --reasoning-parser step5 \
+    --enable-auto-tool-choice \
+    --tool-call-parser step5
+```
 
-On **node 0**, launch DP ranks 0–1 and the API server:
+##### DEP4: Data and Expert Parallelism
+
+```bash
+vllm serve stepfun-ai/Step-5-Preview \
+    --host 0.0.0.0 \
+    --port 18000 \
+    --served-model-name "step5" \
+    --tensor-parallel-size 1 \
+    --data-parallel-size 4 \
+    --enable-expert-parallel \
+    --moe-backend deep_gemm_mega_moe \
+    --data-parallel-backend mp \
+    --distributed-executor-backend mp \
+    --disable-custom-all-reduce \
+    --max-model-len 1048576 \
+    --max-num-batched-tokens 16384 \
+    --max-num-seqs 64 \
+    --gpu-memory-utilization 0.85 \
+    --enable-prefix-caching \
+    --spec-method mtp \
+    --spec-tokens 3 \
+    --reasoning-parser step5 \
+    --enable-auto-tool-choice \
+    --tool-call-parser step5
+```
+
+##### FP8 on H200
+
+For a single node with eight H200 GPUs, adapt one of the B300 commands above:
+
+1. Set `CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7`.
+2. For TP8 or TEP8, set `--tensor-parallel-size 8`. For DEP8, keep `--tensor-parallel-size 1` and set `--data-parallel-size 8`.
+3. For TEP8 or DEP8, retain `--enable-expert-parallel` and remove `--moe-backend deep_gemm_mega_moe`; H200 (Hopper) uses the default MoE backend.
+
+TP and TEP use DP=1; DEP uses TP=1. In all configurations, `--max-num-seqs` applies per DP rank. The 1M-token context limit covers input and output combined. If KV cache memory is insufficient, reduce `--max-model-len` or concurrency.
+
+#### BF16
+
+BF16 deployments require a BF16 checkpoint. Setting `--dtype bfloat16` on the FP8 checkpoint does not convert its quantized weights to BF16.
+
+Mount the BF16 checkpoint directory at the same path inside the container, then set `MODEL` to that path:
 
 ```bash
 export MODEL="<STEP5_BF16_MODEL_PATH>"
-export DP_ADDRESS="<NODE_0_HIGH_SPEED_NETWORK_IP>"
-export DP_RPC_PORT=29550
-export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
-
-vllm serve "$MODEL" \
-  --host 0.0.0.0 \
-  --port 18000 \
-  --served-model-name step5 \
-  --tensor-parallel-size 4 \
-  --data-parallel-size 4 \
-  --data-parallel-size-local 2 \
-  --data-parallel-address "$DP_ADDRESS" \
-  --data-parallel-rpc-port "$DP_RPC_PORT" \
-  --data-parallel-backend mp \
-  --distributed-executor-backend mp \
-  --enable-expert-parallel \
-  --disable-custom-all-reduce \
-  --max-model-len 1048576 \
-  --max-num-batched-tokens 16384 \
-  --max-num-seqs 64 \
-  --gpu-memory-utilization 0.85 \
-  --enable-prefix-caching \
-  --spec-method mtp \
-  --spec-tokens 3 \
-  --reasoning-parser step5 \
-  --enable-auto-tool-choice \
-  --tool-call-parser step5
 ```
 
-On **node 1**, launch DP ranks 2–3 in headless mode:
+Choose a configuration for your hardware:
 
-```bash
-export MODEL="<STEP5_BF16_MODEL_PATH>"
-export DP_ADDRESS="<NODE_0_HIGH_SPEED_NETWORK_IP>"
-export DP_RPC_PORT=29550
-export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
+| Hardware | BF16 layout | MoE backend |
+| :---: | :---: | :---: |
+| 8 B300 GPUs | TP8, TEP8, or DEP8 | MegaMoE for TEP/DEP; default for TP |
+| 2 × 8 H200 GPUs | TP16, TEP16, or DEP16 | Default |
 
-vllm serve "$MODEL" \
-  --served-model-name step5 \
-  --tensor-parallel-size 4 \
-  --data-parallel-size 4 \
-  --data-parallel-size-local 2 \
-  --data-parallel-start-rank 2 \
-  --data-parallel-address "$DP_ADDRESS" \
-  --data-parallel-rpc-port "$DP_RPC_PORT" \
-  --data-parallel-backend mp \
-  --distributed-executor-backend mp \
-  --enable-expert-parallel \
-  --disable-custom-all-reduce \
-  --max-model-len 1048576 \
-  --max-num-batched-tokens 16384 \
-  --max-num-seqs 64 \
-  --gpu-memory-utilization 0.85 \
-  --enable-prefix-caching \
-  --spec-method mtp \
-  --spec-tokens 3 \
-  --reasoning-parser step5 \
-  --enable-auto-tool-choice \
-  --tool-call-parser step5 \
-  --headless
+These configurations provide a starting point for loading the BF16 weights. They do not guarantee enough memory for a 1M-token request; KV cache and runtime buffers also require GPU memory.
+
+##### B300: One Node, 8 GPUs
+
+Set `CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7` inside the container. Start from the [TP4 command](#tp4-tensor-parallelism), replace `stepfun-ai/Step-5-Preview` with `"$MODEL"`, and replace `--tensor-parallel-size 4` with one of the argument sets below:
+
+| Mode | Parallel arguments |
+| :---: | :--- |
+| TP8 | `--tensor-parallel-size 8` |
+| TEP8 | `--tensor-parallel-size 8 --enable-expert-parallel --moe-backend deep_gemm_mega_moe` |
+| DEP8 | `--tensor-parallel-size 1 --data-parallel-size 8 --enable-expert-parallel --moe-backend deep_gemm_mega_moe` |
+
+Retain the remaining serving arguments, including `--served-model-name "step5"`, `--reasoning-parser step5`, and `--tool-call-parser step5`.
+
+##### H200: Two Nodes, 16 GPUs
+
+Use the same BF16 checkpoint path and container image on both nodes. Replace `<NODE_0_IP>` below with node 0's high-speed-network IP, reachable from node 1. H200 uses the default MoE backend; omit `--moe-backend deep_gemm_mega_moe`.
+
+On each node:
+
+1. Set `MODEL` to the mounted BF16 checkpoint path and `CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7`.
+2. Start from the [TP4 command](#tp4-tensor-parallelism) and replace `stepfun-ai/Step-5-Preview` with `"$MODEL"`.
+3. Remove `--host`, `--port`, and `--tensor-parallel-size` from that command, then insert the argument block for your configuration and node below. These blocks contain arguments to append to `vllm serve`, rather than standalone commands.
+
+Keep all other serving arguments, including `--data-parallel-backend mp`, `--distributed-executor-backend mp`, the model name, and both parsers. Run one completed command per node. Only node 0 exposes the API, on port `18000`.
+
+**TP16 / TEP16**
+
+For TP16, use the following arguments. For TEP16, also add `--enable-expert-parallel` on both nodes. Both configurations use DP=1.
+
+Node 0:
+
+```text
+--host 0.0.0.0 \
+--port 18000 \
+--tensor-parallel-size 16 \
+--nnodes 2 \
+--node-rank 0 \
+--master-addr <NODE_0_IP>
 ```
 
-Together, the two nodes run four TP4 groups, with EP16 spanning all 16 GPUs. `--max-num-seqs` applies per DP rank. Only node 0 exposes the API endpoint, on port 18000.
+Node 1:
+
+```text
+--tensor-parallel-size 16 \
+--nnodes 2 \
+--node-rank 1 \
+--master-addr <NODE_0_IP> \
+--headless
+```
+
+**DEP16**
+
+DEP16 uses TP=1 and distributes the experts across 16 data-parallel ranks, with eight ranks on each node. Use the same data-parallel address and RPC port on both nodes.
+
+Node 0:
+
+```text
+--host 0.0.0.0 \
+--port 18000 \
+--tensor-parallel-size 1 \
+--data-parallel-size 16 \
+--data-parallel-size-local 8 \
+--data-parallel-address <NODE_0_IP> \
+--data-parallel-rpc-port 29550 \
+--enable-expert-parallel
+```
+
+Node 1:
+
+```text
+--tensor-parallel-size 1 \
+--data-parallel-size 16 \
+--data-parallel-size-local 8 \
+--data-parallel-start-rank 8 \
+--data-parallel-address <NODE_0_IP> \
+--data-parallel-rpc-port 29550 \
+--enable-expert-parallel \
+--headless
+```
 
 ### Transformers
 
@@ -290,7 +405,7 @@ Pull the Step 5 Preview SGLang Docker image:
 docker pull lmsysorg/sglang:step-5-preview
 ```
 
-After pulling the image, follow the [SGLang installation guide](https://docs.sglang.io/docs/get-started/install) to start a GPU-enabled container with access to your model weights, then run the command for your deployment below inside it.
+Then, launch the server using the configuration for your hardware.
 
 #### B300: Low latency (4 GPUs, TP4/EP1)
 
@@ -431,27 +546,25 @@ python -m sglang.launch_server \
 
 ### Send a Request
 
-Once the server is ready, set `BASE_URL` for your deployment:
+Once the server is ready, use the base URL for your deployment:
 
 | Serving configuration | Base URL on the server host |
 | --- | --- |
-| vLLM FP8 | `http://localhost:8000` |
+| vLLM FP8 | `http://localhost:18000` |
 | vLLM BF16 | `http://localhost:18000` (node 0) |
 | SGLang FP8 | `http://localhost:30000` |
 
 The example below targets vLLM FP8:
 
 ```bash
-export BASE_URL="http://localhost:8000"
-
-curl "$BASE_URL/v1/chat/completions" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "model": "step5",
-    "messages": [
-      {"role": "user", "content": "Please introduce tensor parallelism."}
-    ]
-  }'
+curl http://127.0.0.1:18000/v1/chat/completions \
+    --header 'Content-Type: application/json' \
+    --data '{
+      "model": "step5",
+      "messages": [{"role": "user", "content": "Hello!"}],
+      "max_tokens": 4096,
+      "stream": true
+    }'
 ```
 
 ## Resources
