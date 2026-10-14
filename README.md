@@ -441,75 +441,6 @@ python -m sglang.launch_server \
   --port 30000
 ```
 
-#### B300: Balanced (4 GPUs, TP4/EP1)
-
-For serving several users concurrently with MegaMoE.
-
-```bash
-export CUDA_VISIBLE_DEVICES=0,1,2,3
-
-python -m sglang.launch_server \
-  --trust-remote-code \
-  --model-path stepfun-ai/Step-5-Preview \
-  --served-model-name step5 \
-  --tp 4 \
-  --ep-size 1 \
-  --moe-a2a-backend megamoe \
-  --attention-backend fa4 \
-  --page-size 64 \
-  --kv-cache-dtype bfloat16 \
-  --mem-fraction-static 0.9 \
-  --swa-full-tokens-ratio 0.03 \
-  --chunked-prefill-size 16384 \
-  --max-running-requests 64 \
-  --cuda-graph-backend-prefill breakable \
-  --flashinfer-allreduce-fusion-backend trtllm \
-  --speculative-algorithm EAGLE \
-  --speculative-num-steps 3 \
-  --speculative-eagle-topk 1 \
-  --speculative-num-draft-tokens 4 \
-  --enable-multi-layer-eagle \
-  --reasoning-parser step3p5 \
-  --tool-call-parser step3p5 \
-  --host 0.0.0.0 \
-  --port 30000
-```
-
-#### B300: High throughput (8 GPUs, TP8/Attention DP2/EP8)
-
-For batch generation and high-concurrency serving.
-
-```bash
-export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
-
-python -m sglang.launch_server \
-  --trust-remote-code \
-  --model-path stepfun-ai/Step-5-Preview \
-  --served-model-name step5 \
-  --tp 8 \
-  --attn-dp-size 2 \
-  --ep-size 8 \
-  --moe-runner-backend flashinfer_trtllm \
-  --attention-backend fa4 \
-  --page-size 64 \
-  --kv-cache-dtype bfloat16 \
-  --mem-fraction-static 0.9 \
-  --swa-full-tokens-ratio 0.03 \
-  --chunked-prefill-size 16384 \
-  --max-running-requests 64 \
-  --cuda-graph-backend-prefill disabled \
-  --flashinfer-allreduce-fusion-backend trtllm \
-  --speculative-algorithm EAGLE \
-  --speculative-num-steps 3 \
-  --speculative-eagle-topk 1 \
-  --speculative-num-draft-tokens 4 \
-  --enable-multi-layer-eagle \
-  --reasoning-parser step3p5 \
-  --tool-call-parser step3p5 \
-  --host 0.0.0.0 \
-  --port 30000
-```
-
 #### H200: Balanced (8 GPUs, TP8/EP8)
 
 For single-node H200 serving with Triton MoE and FA3 attention.
@@ -543,6 +474,8 @@ python -m sglang.launch_server \
   --host 0.0.0.0 \
   --port 30000
 ```
+
+For more deployment options, see the [SGLang Cookbook](https://cookbook.sglang.io/cookbook/autoregressive/StepFun/step-5-preview).
 
 ### Send a Request
 
