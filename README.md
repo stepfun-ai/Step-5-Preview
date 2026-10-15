@@ -11,6 +11,7 @@
 
 <p align="center">
   <a href="https://www.stepfun.com/step-5-preview"><img src="https://img.shields.io/badge/Model%20Page-00BFA5" alt="Step 5 Preview Model Page"></a>
+  <a href="https://platform.stepfun.ai/blog/inside-step-5-preview"><img src="https://img.shields.io/badge/Tech%20Blog-0284C7" alt="Step 5 Preview Tech Blog"></a>
   <a href="https://platform.stepfun.ai/docs/en/guides/models/step-5-preview"><img src="https://img.shields.io/badge/Documentation-2563EB" alt="Developer Documentation"></a>
   <a href="https://platform.stepfun.ai/"><img src="https://img.shields.io/badge/API%20Platform-7C3AED" alt="StepFun API Platform"></a>
 </p>
@@ -504,6 +505,7 @@ curl http://127.0.0.1:18000/v1/chat/completions \
 ## Resources
 
 - [Step 5 Preview Model Page](https://www.stepfun.com/step-5-preview) — Model overview, evaluation context, and long-horizon case studies.
+- [Step 5 Preview Technical Blog](https://platform.stepfun.ai/blog/inside-step-5-preview) — Model architecture, training stability, Sparse GQA, agentic data synthesis, and reinforcement learning.
 - [Documentation](https://platform.stepfun.ai/docs/en/guides/models/step-5-preview) — Official documentation and developer guides.
 - [API Platform](https://platform.stepfun.ai/) — Model access and platform services.
 - [StepFun Website](https://www.stepfun.com/) — Company information and model announcements.
